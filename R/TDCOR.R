@@ -3,11 +3,11 @@ function(dataset,l_genes,TPI,DPI,...)
 
 {
 
-## TDCOR v.1.1
+## TDCOR v.1.2
 
 
 
-TDCor_Version="v.1.1"
+TDCor_Version="v.1.2"
 
 
 

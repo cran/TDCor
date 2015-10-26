@@ -9,4 +9,8 @@ export(shortest.path)
 export(estimate.delay)
 import("parallel")
 import("deSolve")
+importFrom("grDevices", "dev.new")
+importFrom("graphics", "abline", "axis", "layout", "lines", "mtext","par", "plot")
+importFrom("stats", "cor", "density", "integrate", "median", "na.omit","rnorm", "runif","splinefun")
+importFrom("utils", "write.table")
 

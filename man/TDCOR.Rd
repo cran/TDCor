@@ -47,16 +47,16 @@ A positive number corresponding to the time step (in hours) i.e. the temporal re
 A positive number. It is the maximum time shift (in hours) which is analysed. It should be high enough for the time shift estimation process to be successful but argueably relatively small in comparison to the overall duration of the time series. (e.g. for the LR dataset which has data spanning over 54 hours, \code{delayspan} was set to 12 hours).
 }
   \item{\code{tol}: 
-A strictly positive number corresponding to the tolerance threshold on the final score of time shift estimates. The score is a  positive number that measures the "level of disagreement" between the four methods used to estimate the time shift. A time shift estimate will be regarded as meaningful if it scores lower than this threshold. If all four methods used to estimate the time shift agree on a certain value of time shift, the estimate obtains the best possible score which is 0. Increasing \code{tol} make the time shift estimation process LESS stringent. For more information see \code{\link{estimate.delay}}.
+A strictly positive number corresponding to the tolerance threshold on the final score of time shift estimates. The score is a  positive number that measures the "level of disagreement" between the four time shift estimators. A time shift estimate is regarded as meaningful if it scores lower than the \code{tol} threshold. If all four estimators agree on a certain value of time shift, the estimate obtains the best possible score, which is 0. Increasing \code{tol} make the time shift estimation process LESS stringent. For more information see \code{\link{estimate.delay}}.
 }
   \item{\code{delaymin}: 
-A numerical vector containing one or two positive elements corresponding to the boundaries of the boostrapping interval for the minimum time shift above which putative interactions are regarded as possible. If no \code{delaymin} parameter is provided, it is by default equal to 0 hour. Gene pairs with time shift lower than \code{delaymin} are regarded as co-regulation and are therefore not included in the network.
+A numerical vector containing one or two positive elements corresponding to the boundaries of the boostrapping interval for the minimum time shift above which putative interactions are regarded as possible. If no \code{delaymin} parameter is provided, it is by default equal to 0 hour. Gene pairs with time shift lower than or equal to \code{delaymin} are regarded as co-regulation and are therefore not included in the network.
 }
   \item{\code{delaymax}: 
 A numerical vector containing one or two positive elements corresponding to the boundaries of the boostrapping interval for the maximum time shift above which putative interactions are regarded as indirect. If no \code{delaymax} parameter is provided, it is by default equal to 3 hours. Putative indirect interactions are included in the network only when the putative target is not predicted any direct regulator.
 }
   \item{\code{thr_cor}: 
-A numerical vector containing one or two positive elements between 0 and 1 corresponding to the boundaries of the boostrapping interval for the threshold of Pearson's correlation. If no \code{thr_cor} parameter is provided, it is by default equal to [0.7;0.9]. Note that increasing \code{thr_cor} makes the correlation filter MORE stringent.
+A numerical vector containing one or two positive elements between 0 and 1 corresponding to the boundaries of the boostrapping interval for the threshold of Pearson's correlation. A gene pair is included in the preliminary network only if the correlation between the profiles (with the time shift correction) is higher than or equal to the \code{thr_cor} threshold. If no \code{thr_cor} parameter is provided, it is by default equal to [0.7;0.9]. Note that increasing \code{thr_cor} makes the correlation filter MORE stringent.
 }
   \item{\code{delay}:
 A positive number corresponding to the most likely time shift (in hours) one could expect between the profile of a regulator and the profile of its direct targets. This parameter enables one to generate the reference profiles of the ideal regulator when calculating the index of directness (ID). If no \code{delay} parameter is provided, it is by default equal to 3 hours. Note that similar parameters serving the same purpose are also used to calculate the triangle pruning index and the diamond pruning index. But TDCOR reads the value to use for calculating those indices directly from the TPI and DPI databases (for consistency reasons).
@@ -98,10 +98,12 @@ An integer. Maximum number of MRST that can be predicted at each iteration. If n
 An integer. Maximum number of regulators that a target may have. If no \code{regmax} parameter is provided, it is by default equal to 6.
 }
   \item{\code{outfile_name}:
-A string. Name of the file to print the network table in. By default "TDCor_output.txt".
+A string. Name of the file to print the network table in. By default it is "TDCor_output.txt".
 }
 }
 }
+}
+\note{For a parameter to be involved in the bootstrapping process, one must feed the function a vector containing two values as input. These two values are respectively the lower and upper boundaries of the bootstrapping interval. If one chooses not to use a parameter for bootstrapping, one can either feed the function an input vector containing twice the same value, or only one value.
 }
 \details{
 The default values are certainly not the best values to work with. The TDCOR parameters have to be optimized by the user based on its own knowledge of the network, the quality of the data etc... Because TDCOR works by pruning interactions, it is probably easier (as a first go) to optimize the parameter values following the order of the filters. 
@@ -111,6 +113,7 @@ Before starting inactivate all the filters using the less stringent parameter va
 Start by optimizing the parameters involved in time shifts estimation. That is to say, essentially \code{delayspan}, \code{time_step}, \code{tol} and \code{delaymax}. The latter (together with \code{delaymin}) is a biological parameters and the range of possible values is argueably limited. Though they ought to be adapted to the organism (e.g. in prokaryotes, the delays are extremely short since polysomes couple transcription and translation). Note that the \code{\link{estimate.delay}} function can be very helpful to optimize these various parameters thanks to the visual output. Use it with pairs of genes that have been shown to interact directly or indirectly in your system and for which the relationship in the dataset in clearly linear. For network reconstruction with TDCor, good time shift estimation is absolutely crucial. Once this is done, proceed with optimizing the threshold for correlation \code{thr_cor} and the thresholds on the index of directness (\code{thr_ind1}, \code{thr_ind2}). Then optimize the parameters of the triangle and diamond pruning filters (\code{thrpTPI} and \code{thrpDPI}). You may have to try a couple of different TPI and DPI databases (i.e. databases built with different input parameters). In particular increasing the \code{noise} level when generating these database enables one to decrease the stringency of the triangle and diamond filters, when increasing the \code{thrpTPI} and \code{thrpDPI} value is not sufficient. Subsequently fine-tune the parameters of the MRST filter (\code{thr_bool_EP}, \code{MinTarNumber}, \code{MinProp}, \code{MaxEPNumber}) if you want it on. Remember to set \code{search.EP} back to TRUE first. Next optimize \code{thr_isr} (self-regulation). Finally, restrict the number of maximum regulators if necessary (\code{regmax}).
 
 }
+
 \value{
 The \code{TDCOR} main function returns a list containing 7 elements
 

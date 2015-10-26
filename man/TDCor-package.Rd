@@ -11,8 +11,8 @@ TDCor (Time-Delay Correlation) is an algorithm designed to infer the topology of
 \tabular{ll}{
 Package: \tab TDCor\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2015-04-08\cr
+Version: \tab 1.2\cr
+Date: \tab 2015-10-05\cr
 License: GNU General Public License Version 2
 }
 The reconstruction of a gene network using the TDCor package involves six steps.\cr
